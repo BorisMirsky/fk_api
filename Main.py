@@ -13,10 +13,10 @@ from Citizenship_country import Citizenship_country     # примет стра�
 from pandas1 import Do_pandas                           # примет страну и клуб, выдаст игроков с наибольшим количеством игр, голов,
                                                         #         жёлтых/красных карточек
 font = {'family': 'DejaVu Sans','weight': 'normal'}     # шрифт для Ubuntu 
-rc('font', **font)                                      # -------//-------
+rc('font', **font)                                      #  то же самое
 
 
-class MenuBar(QtGui.QMainWindow):                      # Панель меню, не иcпользуется, элемент декора
+class MenuBar(QtGui.QMainWindow):                      # Верхняя панель меню, не иcпользуется
     def __init__(self):
         super(MenuBar, self).__init__()
         self.setWindowTitle('message box')
@@ -56,7 +56,7 @@ class MenuBar(QtGui.QMainWindow):                      # Панель меню, 
 class MainDialog(QtGui.QDialog):                      # Основной элемент для вкладок (Tabs)
     def __init__(self, fileName, parent=None):
         super(MainDialog, self).__init__(parent)
-        fileInfo = QtCore.QFileInfo(fileName)         # 
+        fileInfo = QtCore.QFileInfo(fileName)          
         tabWidget = QtGui.QTabWidget()
         tabWidget.addTab(Tab1(fileInfo), "Tab1")
         tabWidget.addTab(Tab2(fileInfo), "Tab2")
@@ -71,8 +71,8 @@ class MainDialog(QtGui.QDialog):                      # Основной эле�
         self.setWindowIcon(QtGui.QIcon('tshirt_icon.png'))     
         self.resize(300, 400)                               
         self.move(150, 150)
-        self.sshFile="darkorange.stylesheet"    # Stylesheet
-        with open(self.sshFile,"r") as fh:      #      from http://www.yasinuludag.com/darkorange.stylesheet
+        self.sshFile="darkorange.stylesheet"            # Внешний файл с таблицей стилей 
+        with open(self.sshFile,"r") as fh:              #    взят здесь: http://www.yasinuludag.com/darkorange.stylesheet
             self.setStyleSheet(fh.read())
 
 
@@ -85,7 +85,6 @@ class Tab1(QtGui.QWidget):
                           'обрабатывает\nнекоторые параметры команд и игроков.\n'
                           'Используются внешние парсеры, matplotlib, pandas.\n'
                           'Все данные создаются динамически.')
-#        l1.setStyleSheet('border-style: solid; border-width: 1px; border-color: black;')
         layout = QtGui.QVBoxLayout()
         layout.addWidget(l1)
         self.setLayout(layout)
@@ -104,7 +103,7 @@ class Tab2(QtGui.QWidget):
         self.ans1 = QtGui.QPlainTextEdit()                         # текстовое поле
         self.l33 = QtGui.QLabel('')
         self.l4 = QtGui.QLabel('Получить график') 
-        self.btn1 = QtGui.QPushButton("Get plot", self)  # кнопка
+        self.btn1 = QtGui.QPushButton("Get plot", self)            # кнопка
         self.c.addItems(names.country_list_2)                      # список стран по русски вставили в 1й выпадающий список
         self.c.currentIndexChanged.connect(self.select_c)          # при выборе из c запускается select_c
         self.t.currentIndexChanged.connect(self.select_t)          # при выборе из t запускается select_t
@@ -150,8 +149,7 @@ class Tab2(QtGui.QWidget):
                      
 class Tab3(QtGui.QWidget):
     def __init__(self, fileInfo, parent = None):
-        super(Tab3, self).__init__(parent)
-        
+        super(Tab3, self).__init__(parent)      
         self.l1 = QtGui.QLabel('Выбор страны')
         self.c1 = QtGui.QComboBox()
         self.l11 = QtGui.QLabel('')
@@ -190,7 +188,7 @@ class Tab4(QtGui.QWidget):
         self.l5 = QtGui.QLabel('Пятеро самых жёстких (карточки)') 
         self.btn3 = QtGui.QPushButton("Get", self)  # кнопка
         self.l33 = QtGui.QLabel('')
-        self.ans = QtGui.QPlainTextEdit()                         # текстовое поле
+        self.ans = QtGui.QPlainTextEdit()                          # текстовое поле
         self.c.addItems(names.country_list_2)                      # список стран по русски вставили в 1й выпадающий список
         self.c.currentIndexChanged.connect(self.select_c)          # при выборе из c запускается select_c
         self.t.currentIndexChanged.connect(self.select_t)          # при выборе из t запускается select_t
@@ -233,10 +231,10 @@ class Tab4(QtGui.QWidget):
         self.x3 = Do_pandas(x1, x2)          # передача страны и клуба 
 
     def get_matches(self):
-        self.ans.setPlainText(str(self.x3.matches()))   # передать в текстовое поле
+        self.ans.setPlainText(str(self.x3.matches()))      # передать в текстовое поле
 
     def get_goals(self):
-        self.ans.setPlainText(str(self.x3.goals()))   # передать в текстовое поле
+        self.ans.setPlainText(str(self.x3.goals()))        # передать в текстовое поле
 
     def get_yellow(self):
         self.ans.setPlainText(str(self.x3.yellow_red()))   # передать в текстовое поле
@@ -251,4 +249,3 @@ if __name__ == '__main__':
     maindialog = MainDialog(fileName)
     sys.exit(maindialog.exec_())
     
-# in manual:  433 - connect, 520 - ComboBox, 497 - PlainTextEdit

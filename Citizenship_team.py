@@ -36,5 +36,3 @@ class Citizenship_team:
       z =  [i[0] for i in y.items()]         # список стран, X,             x.date_for_plot()[0]
       zz = [i[1] for i in y.items()]         # список гражданств, L,        x.date_for_plot()[1]
       return z, zz
-
-# x = Citizenship_team('italy', 'genoa')

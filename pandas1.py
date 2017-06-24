@@ -7,8 +7,7 @@ class Do_pandas:
       self.df = pd.read_html(url)[1]            
       self.df.columns = ['№', "Игроки", 2, 3, "Матчи", "Голы", "Жёлтые", "Красные" ]
       self.df = self.df.set_index("Игроки") # назначаю "Игроков" индексом
-      
-      
+          
    def matches(self):
       # для сортировки меняется тип столбца на цифровой
       self.df["Матчи"] = pd.to_numeric(self.df["Матчи"], errors='coerce')
@@ -30,6 +29,3 @@ class Do_pandas:
       self.df["Красные"] = pd.to_numeric(self.df["Красные"], errors='coerce')
       y = self.df.loc[:,["Красные"]].sort_values("Красные", ascending=False)[:5]
       return y
-      
-# x = Do_pandas('italy', 'genoa')
-

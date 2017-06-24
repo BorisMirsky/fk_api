@@ -60,6 +60,7 @@ class Citizenship_country:
       y1 = OrderedDict(sorted(dd.items(), key=lambda t: t[1], reverse = True))    
       y = str(list(y1.items()))
       return y
+
    
    def __repr__(self):
       return(self.make_dict())
