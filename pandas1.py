@@ -1,6 +1,8 @@
 # coding: utf8
 import pandas as pd
 
+
+# принимает страну и клуб, строит урл, строит таблицу из страницы
 class Do_pandas:                       
    def __init__(self, country, team):
       url = 'http://football.kulichki.net/%s/2017/teams/%s.htm' % (country, team)
@@ -12,7 +14,7 @@ class Do_pandas:
       # для сортировки меняется тип столбца на цифровой
       self.df["Матчи"] = pd.to_numeric(self.df["Матчи"], errors='coerce')
       # сортировка по убыванию
-      y = self.df.loc[:,["Матчи"]].sort_values("Матчи", ascending=False)[:5]
+      y = self.df.loc[:,["Матчи"]].sort_values("Матчи", ascending=False)[:5]   # 5 верхних результатов
       return y
 
    def goals(self):
@@ -29,3 +31,6 @@ class Do_pandas:
       self.df["Красные"] = pd.to_numeric(self.df["Красные"], errors='coerce')
       y = self.df.loc[:,["Красные"]].sort_values("Красные", ascending=False)[:5]
       return y
+
+
+# x = Do_pandas('italy', 'napoli')

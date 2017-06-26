@@ -11,7 +11,7 @@ import names
 class Make_html:
    def __init__(self, country):                                # принимает по русски
       i = names.country_list_2.index(country)                  # индекс страны
-      _country = names.country_list_1[i]     
+      _country = names.country_list_1[i]                       #  переключает на английский
       self.country = _country 
       self.url = ('http://football.kulichki.net/%s' % self.country)
       self.responce = requests.get(self.url)

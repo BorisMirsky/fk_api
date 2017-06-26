@@ -5,6 +5,7 @@ import sys
 import matplotlib.pyplot as plt
 from matplotlib import rc
 
+from number9 import Get_9, Get_9s
 import names
 from Teams import Teams                                 # примет страну выдаст клубы
 from Switch_names import Country_team                   # переключит названия клубов с русского на английский
@@ -62,6 +63,8 @@ class MainDialog(QtGui.QDialog):                      # Основной эле�
         tabWidget.addTab(Tab2(fileInfo), "Tab2")
         tabWidget.addTab(Tab3(fileInfo), "Tab3")
         tabWidget.addTab(Tab4(fileInfo), "Tab4")
+        tabWidget.addTab(Tab5(fileInfo), "Tab5")
+        tabWidget.addTab(Tab6(fileInfo), "Tab6")
         mainLayout = QtGui.QVBoxLayout()
         mainLayout.addWidget(MenuBar())
         mainLayout.addWidget(tabWidget)
@@ -69,7 +72,7 @@ class MainDialog(QtGui.QDialog):                      # Основной эле�
         self.setLayout(mainLayout)
         self.setWindowTitle("API for football.kulichki")
         self.setWindowIcon(QtGui.QIcon('tshirt_icon.png'))     
-        self.resize(300, 400)                               
+        self.resize(300, 550)                               
         self.move(150, 150)
         self.sshFile="darkorange.stylesheet"            # Внешний файл с таблицей стилей 
         with open(self.sshFile,"r") as fh:              #    взят здесь: http://www.yasinuludag.com/darkorange.stylesheet
@@ -101,6 +104,7 @@ class Tab2(QtGui.QWidget):
         self.l22 = QtGui.QLabel('')
         self.l3 = QtGui.QLabel('Гражданство игроков команды')          
         self.ans1 = QtGui.QPlainTextEdit()                         # текстовое поле
+        self.ans1.setReadOnly(True)
         self.l33 = QtGui.QLabel('')
         self.l4 = QtGui.QLabel('Получить график') 
         self.btn1 = QtGui.QPushButton("Get plot", self)            # кнопка
@@ -157,6 +161,7 @@ class Tab3(QtGui.QWidget):
         self.l2 = QtGui.QLabel('Гражданство всех игроков чемпионата в виде:')
         self.l3 = QtGui.QLabel('(страна, сколько человек)')
         self.ans = QtGui.QPlainTextEdit()
+        self.ans.setReadOnly(True)
         self.c1.currentIndexChanged.connect(self.select_c1)
         layout = QtGui.QVBoxLayout()
         layout.addWidget(self.l1)                                
@@ -189,12 +194,16 @@ class Tab4(QtGui.QWidget):
         self.btn3 = QtGui.QPushButton("Get", self)  # кнопка
         self.l33 = QtGui.QLabel('')
         self.ans = QtGui.QPlainTextEdit()                          # текстовое поле
+        self.ans.setReadOnly(True)
+        
         self.c.addItems(names.country_list_2)                      # список стран по русски вставили в 1й выпадающий список
         self.c.currentIndexChanged.connect(self.select_c)          # при выборе из c запускается select_c
         self.t.currentIndexChanged.connect(self.select_t)          # при выборе из t запускается select_t
-        self.btn1.clicked.connect(self.get_matches)
+
+        self.btn1.clicked.connect(self.get_matches)                 # coding: utf8)
         self.btn2.clicked.connect(self.get_goals)
         self.btn3.clicked.connect(self.get_yellow)
+        
         self.btn1.setFixedWidth(80)
         self.btn2.setFixedWidth(80)
         self.btn3.setFixedWidth(80)
@@ -238,6 +247,110 @@ class Tab4(QtGui.QWidget):
 
     def get_yellow(self):
         self.ans.setPlainText(str(self.x3.yellow_red()))   # передать в текстовое поле
+
+
+class Tab5(QtGui.QWidget):
+    def __init__(self, fileInfo, parent=None):
+        super(Tab5, self).__init__(parent)
+        self.l1 = QtGui.QLabel('Всегда нравились игроки под №9')
+        self.l11 = QtGui.QLabel('')
+        self.l2 = QtGui.QLabel('Выбор страны')
+        self.c1 = QtGui.QComboBox()                         # 1й выпадающий список "Страны"
+        self.l3 = QtGui.QLabel('Выбор команды')
+        self.t = QtGui.QComboBox()                         # 2й выпадающий список "Команды"
+        self.btn1 = QtGui.QPushButton("Get 9", self)       # кнопка выбора №1
+        self.l33 = QtGui.QLabel('')                        # пустая строка
+        self.l4 = QtGui.QLabel('Выбор страны')
+        self.c2 = QtGui.QComboBox()                        # 3й выпадающий список "Страны"
+        self.btn2 = QtGui.QPushButton("Get 9s", self)      # кнопка выбора №2
+                
+        self.l5 = QtGui.QLabel('') 
+        self.ans = QtGui.QPlainTextEdit()                          # текстовое поле
+        self.ans.setReadOnly(True)
+        
+        self.c1.addItems(names.country_list_2)                      # список стран по русски вставили в 1й выпадающий список
+        self.c1.currentIndexChanged.connect(self.select_c1)         # при выборе из c1 запускается select_c1
+        self.t.currentIndexChanged.connect(self.select_t)           # при выборе из t запускается select_t
+
+        self.c2.addItems(names.country_list_2)                      # список стран по русски вставили в 1й выпадающий список
+        self.c2.currentIndexChanged.connect(self.select_c2)         # при выборе из c1 запускается select_c1
+
+        self.btn1.clicked.connect(self.get_extract_9)
+        self.btn2.clicked.connect(self.get_extract_9s)
+
+        self.btn1.setFixedWidth(80)
+        self.btn2.setFixedWidth(80)
+        layout = QtGui.QVBoxLayout()
+        layout.addWidget(self.l1)
+        layout.addWidget(self.l11)
+        layout.addWidget(self.l2)
+        layout.addWidget(self.c1)
+        layout.addWidget(self.l3) 
+        layout.addWidget(self.t)
+        layout.addWidget(self.btn1)
+        layout.addWidget(self.l33)
+        layout.addWidget(self.l4)
+        layout.addWidget(self.c2)
+        layout.addWidget(self.btn2)
+        layout.addWidget(self.l5)
+        layout.addWidget(self.ans)
+        self.setLayout(layout)
+
+    # запускается при выборе из 1-го выпадающего списка "c1"
+    def select_c1(self):                       
+        x = Teams(self.c1.currentText())         # Teams.Teams: страна по русски --> клубы по русски
+        x1 = x.make_dict()                      # выдаст в правильном формате
+        self.t.clear()                          # очистить список t
+        self.t.addItems(x1)                     # список клубов передан в t
+       
+    # запускается при выборе из 2-го выпадающего списка "t"
+    def select_t(self):
+        x = Country_team(self.c1.currentText(), self.t.currentText()) # Страна и клуб по русски--> по английски
+        x1 = x.switch_names()[0]                              # страна по английски
+        x2 = x.switch_names()[1]                              # клуб по английски
+        self.ans.clear()
+        self.x3 = Get_9(x1, x2)                               # передача страны и клуба
+
+    def get_extract_9(self):
+        self.ans.setPlainText(str(self.x3.extract_9()))                   #.extract_9()))      # передать в текстовое поле
+
+    # запускается при выборе из 2-го выпадающего списка "c2"
+    def select_c2(self):                       
+        x = Teams(self.c2.currentText())         # Teams.Teams: страна по русски --> клубы по русски
+        x1 = x.make_dict()                      # выдаст в правильном формате
+        self.x2 = Get_9s(x1)
+
+    def get_extract_9s(self):
+        self.ans.setPlainText(str(self.x2.extract_9s()))      # передать в текстовое поле
+             
+
+
+class Tab6(QtGui.QWidget):                                       # Новости + Аналитика (возможно)
+    def __init__(self, fileInfo, parent=None):
+        super(Tab6, self).__init__(parent)
+        self.l1 = QtGui.QLabel('Выбор страны')
+        self.c = QtGui.QComboBox()               # 1й выпадающий список "Страны"
+        self.l11 = QtGui.QLabel('')
+        self.l2 = QtGui.QLabel('Выбор команды')
+        self.t = QtGui.QComboBox()               # 2й выпадающий список "Команды"
+        self.l22 = QtGui.QLabel('')
+        self.l3 = QtGui.QLabel('Все "девятки" чемпионата') 
+        self.ans = QtGui.QPlainTextEdit()                          # текстовое поле
+        self.ans.setReadOnly(True)
+        self.c.addItems(names.country_list_2)                      # список стран по русски вставили в 1й выпадающий список
+     #   self.c.currentIndexChanged.connect(self.select_c)          # при выборе из c запускается select_c
+     #   self.t.currentIndexChanged.connect(self.select_t)          # при выборе из t запускается select_t
+        layout = QtGui.QVBoxLayout()   
+        layout.addWidget(self.l1) 
+        layout.addWidget(self.c)
+        layout.addWidget(self.l11)
+        layout.addWidget(self.l2) 
+        layout.addWidget(self.t)
+        layout.addWidget(self.l22)
+        layout.addWidget(self.l3)
+        layout.addWidget(self.ans)
+        self.setLayout(layout)
+
 
              
 if __name__ == '__main__':
