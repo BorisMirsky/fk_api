@@ -30,7 +30,7 @@ class Teams:
      # teams = [j.split('.')[0] for j in teams1]   # разбили team.htm по точке
       post = tree.xpath('.//li[@class="yellow-green-bg"][2]/ul/li/a')
       teams = [i.text_content() for i in post]
-      teams.insert(0, "")  # ?
+      #teams.insert(0, "")  # ?
       return teams   # вернёт список клубов
    
    def __repr__(self):

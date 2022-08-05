@@ -13,6 +13,7 @@ class Make_html_team:
          output_file.write(self.responce.text) 
       self.html_text = open('test_1.html', 'r').read()
 
+# Citizenship_team(x1, x2)
 # подсчёт гражданства по игрокам в заданной команде
 class Citizenship_team:                       
    def __init__(self, country, team):
@@ -33,6 +34,11 @@ class Citizenship_team:
    
    def date_for_plot(self):
       y = self.d
-      z =  [i[0] for i in y.items()]         # список стран, X,             x.date_for_plot()[0]
+      z =  [i[0] for i in y.items()]         # список стран, X,             x.date_for_plot()[0]      
       zz = [i[1] for i in y.items()]         # список гражданств, L,        x.date_for_plot()[1]
       return z, zz
+
+
+
+
+   

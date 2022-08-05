@@ -4,7 +4,13 @@ import requests
 import sys
 import names
 import pandas as pd
+from datetime import datetime
 
+
+
+
+dateTimeObj = datetime.now()
+current_year = dateTimeObj.year
 
 # Все № страны. Принимает страну по английски
 class Make_html_1:
@@ -12,7 +18,8 @@ class Make_html_1:
       i = names.country_list_2.index(country)                  # индекс страны
       _country = names.country_list_1[i]                       
       self.country = _country                                  # страна для урла (по английски)
-      self.url = ('http://football.kulichki.net/%s' % self.country)
+      self.url = 'https://football.kulichki.net/%s/%d/teams/%s.htm' % (country, current_year, team)
+      #self.url = ('http://football.kulichki.net/%s' % self.country)
       self.responce = requests.get(self.url)
       with open('country_page1.html', 'w') as output_file:
             output_file.write(self.responce.text) 
@@ -51,6 +58,7 @@ class Get_9:
 
 
 
-
+#x = Get_9('italy', 'napoli')
+#print(x.extract_9())
 
    
