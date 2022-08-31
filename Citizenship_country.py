@@ -6,18 +6,39 @@ from requests.exceptions import RequestException
 import sys
 from collections import OrderedDict
 import names
+import random
+import time
+
+
+
+
+user_agent_file = open("user-agents.txt", "r").readlines()
+#random_user_agent = random.choice(user_agent_file).strip()
+#header = {'user-agent': random_user_agent}
+
+
+
+def random_user_agent():
+    #user_agent_file = open("user-agents.txt", "r").readlines()
+    random_user_agent = random.choice(user_agent_file).strip()
+    header = {'user-agent': random_user_agent}
+    return header
+
 
 
 class Make_html:
-   def __init__(self, country):                                # принимает по русски
-      i = names.country_list_2.index(country)                  # индекс страны
-      _country = names.country_list_1[i]                       #  переключает на английский
-      self.country = _country 
+   def __init__(self, country_ru):                                # принимает по русски
+      #i = names.country_list_2.index(country)                  # индекс страны
+      #_country = names.country_list_1[i]                       #  переключает на английский
+      country_lat = names.country_list[country_ru]
+      self.country = country_lat 
       self.url = ('http://football.kulichki.net/%s' % self.country)
-      self.responce = requests.get(self.url)
+      self.responce = requests.get(self.url, headers = random_user_agent())
       with open('country_page.html', 'w') as output_file:
             output_file.write(self.responce.text) 
       self.html_text = open('country_page.html', 'r').read()
+
+
 
 class Citizenship_country:
    def __init__(self, country):
@@ -25,6 +46,7 @@ class Citizenship_country:
       self.make_dict()
 
 # СЛИШКОМ БОЛЬШАЯ ФУНКЦИЯ, НАДО РАЗБИТЬ!
+# плохие переменный, плохо называются
    def make_dict(self):
       tree = fromstring(self.root.html_text)                                  #  html-файл в формате строки - 
       links = tree.xpath('.//li[@class="yellow-green-bg"][2]/ul/li/a/@href')   
@@ -33,12 +55,16 @@ class Citizenship_country:
       for link in links:           # переход по всем ссылкам - высший дивизион страны
          i+=1
          try:                                   # germany spain italy mls
-            responce = requests.get(link)                   #   ----------БУДЕТ МНОГО html-ФАЙЛОВ-!-
+            #responce = requests.get(link)                   #   ----------БУДЕТ МНОГО html-ФАЙЛОВ-!-
+            time.sleep(1)
+            responce = requests.get(link, headers = random_user_agent())
             with open('test%d.html' % i, 'w') as output_file:        
                output_file.write(responce.text)                     
             html_text = open('test%d.html' % i, 'r').read()       
          except RequestException:                # turkey england france holland portugal ukraine belarus kz
-            responce = requests.get('http://football.kulichki.net' + link)      #   ----------БУДЕТ МНОГО html-ФАЙЛОВ-!-
+            #responce = requests.get('http://football.kulichki.net' + link)      #   ----------БУДЕТ МНОГО html-ФАЙЛОВ-!-
+            time.sleep(1)
+            responce = requests.get('http://football.kulichki.net' + link, headers = random_user_agent())
             with open('test%d.html' % i, 'w') as output_file:       
                output_file.write(responce.text)                     
             html_text = open('test%d.html' % i, 'r').read()                         
@@ -58,10 +84,14 @@ class Citizenship_country:
       KKK = set(KK)                     # перевод в множество, т.е только. уникальные гражданства
       dd = dict(KKK)                    # перевод в словарь
       y1 = OrderedDict(sorted(dd.items(), key=lambda t: t[1], reverse = True))    
-      y = str(list(y1.items()))
-      return y
+      y = list(y1.items())
+      res = '\n'.join([(q[0] + ' - ' + str(q[1])) for q in y])
+      return res  
 
    
    def __repr__(self):
       return(self.make_dict())
 
+
+#x = Citizenship_country("Англия")
+#print(x)

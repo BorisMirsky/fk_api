@@ -1,6 +1,5 @@
 # coding: utf8
 
-
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -10,7 +9,7 @@ import matplotlib.pyplot as plt
 from matplotlib import rc
 
 #import html5lib
-import requests
+#import requests
 from number9 import Get_9, Get_9s
 import names
 from Teams import Teams                                 # примет страну выдаст клубы
@@ -19,6 +18,7 @@ from Citizenship_team import Citizenship_team           # примет стра�
 from Citizenship_country import Citizenship_country     # примет страну выдаст гражданства страны
 from pandas1 import Do_pandas                           # примет страну и клуб, выдаст игроков с наибольшим количеством игр, голов,
                                                         #         жёлтых/красных карточек
+                                                        
 font = {'family': 'DejaVu Sans','weight': 'normal'}     # шрифт для Ubuntu 
 rc('font', **font)                                      #  то же самое
 
@@ -114,7 +114,7 @@ class Tab2(QWidget):
         self.l33 = QLabel('')
         self.l4 = QLabel('Получить график') 
         self.btn1 = QPushButton("Get plot", self)            # кнопка
-        self.c.addItems(names.country_list_2)                      # список стран по русски вставили в 1й выпадающий список
+        self.c.addItems(list(names.country_list.keys()))            # список стран по русски вставили в 1й выпадающий список
         self.c.currentIndexChanged.connect(self.select_c)          # при выборе из c запускается select_c
         self.t.currentIndexChanged.connect(self.select_t)          # при выборе из t запускается select_t
         self.btn1.clicked.connect(self.make_plot)                  # появляется график при нажатии на кнопку
@@ -134,10 +134,11 @@ class Tab2(QWidget):
         self.setLayout(layout)
 
     # запускается при выборе из 1-го выпадающего списка "c"
-    # select_c
-    def select_c(self):                       
-        x = Teams(self.c.currentText())         # Teams.Teams примет страну по русски, выдаст список клубы по русски
+    def select_c(self):
+        print(self.c.currentText())
+        x = Teams(self.c.currentText())         # Teams.Teams примет страну по русски, выдаст список 'клубы по русски'
         x1 = x.make_dict()                      # выдаст в правильном формате
+        print(x1)
         self.t.clear()                          # очистить список t
         self.t.addItems(x1)                     # список клубов передан в t
         self.ans1.clear()
@@ -164,7 +165,7 @@ class Tab3(QWidget):
         self.l1 = QLabel('Выбор страны')
         self.c1 = QComboBox()
         self.l11 = QLabel('')
-        self.c1.addItems(names.country_list_2)
+        self.c1.addItems(list(names.country_list.keys()))  #names.country_list_2)
         self.l2 = QLabel('Гражданство всех игроков чемпионата в виде:')
         self.l3 = QLabel('(страна, сколько человек)')
         self.ans = QPlainTextEdit()
@@ -182,6 +183,7 @@ class Tab3(QWidget):
     def select_c1(self):
         self._x1 = Citizenship_country(self.c1.currentText())      # 
         self.ans.setPlainText(str(self._x1))
+        #print(self.c1.currentText())
 
     
 class Tab4(QWidget):
@@ -203,14 +205,13 @@ class Tab4(QWidget):
         self.ans = QPlainTextEdit()                          # текстовое поле
         self.ans.setReadOnly(True)
         
-        self.c.addItems(names.country_list_2)                      # список стран по русски вставили в 1й выпадающий список
+        self.c.addItems(list(names.country_list.keys())) #names.country_list_2)                      # список стран по русски вставили в 1й выпадающий список
         self.c.currentIndexChanged.connect(self.select_c)          # при выборе из c запускается select_c
         self.t.currentIndexChanged.connect(self.select_t)          # при выборе из t запускается select_t
 
         self.btn1.clicked.connect(self.get_matches)                 # coding: utf8)
         self.btn2.clicked.connect(self.get_goals)
-        self.btn3.clicked.connect(self.get_yellow)
-        
+        self.btn3.clicked.connect(self.get_yellow)    
         self.btn1.setFixedWidth(80)
         self.btn2.setFixedWidth(80)
         self.btn3.setFixedWidth(80)
@@ -234,32 +235,32 @@ class Tab4(QWidget):
     # запускается при выборе из 1-го выпадающего списка "c"
     def select_c(self):
         x = Teams(self.c.currentText())         # Teams.Teams: страна по русски --> клубы по русски
-        #x1 = x.make_dict()                      # выдаст в правильном формате
+        x1 = x.make_dict()                      # выдача в правильном формате
         self.t.clear()                          # очистить QComboBox t
-        self.t.addItems(["", "1", "2", "3"])                    # список клубов передан в t
-        #self.t.addItems(x)
+        self.t.addItems(x1)                     # добавляет в t
+        self.ans.clear()
        
     # запускается при выборе из 2-го выпадающего списка "t"
     def select_t(self):
         x = Country_team(self.c.currentText(), self.t.currentText()) # Страна и клуб по русски--> по английски
-        x1 = x.switch_names()[0]            # страна по английски
-        x2 = x.switch_names()[1]            # клуб по английски
+        x1 = x.switch_names()[0]             # страна по английски
+        x2 = x.switch_names()[1]             # клуб по английски
         self.ans.clear()
-        self.x3 = Do_pandas(x1, x2)          # передача страны и клуба 
+        #print(x1, x2)
+        self.x3 = Do_pandas(x1, x2)          # передача страны и клуба
+        # x3 - Экземпляр класса-объект, имеет смысл только с методами
 
     def get_matches(self):
-        #print(str(self.x3.matches()))
         self.ans.setPlainText(str(self.x3.matches()))      # передать в текстовое поле
 
     def get_goals(self):
-        #print(str(self.x3.goals()))
         self.ans.setPlainText(str(self.x3.goals()))        # передать в текстовое поле
 
     def get_yellow(self):
-        #print(str(self.x3.yellow_red()))
         self.ans.setPlainText(str(self.x3.yellow_red()))   # передать в текстовое поле
 
 
+# переделать в получение любого номера, не только '9'
 class Tab5(QWidget):
     def __init__(self, fileInfo, parent=None):
         super(Tab5, self).__init__(parent)
@@ -279,11 +280,11 @@ class Tab5(QWidget):
         self.ans = QPlainTextEdit()                          # текстовое поле
         self.ans.setReadOnly(True)
         
-        self.c1.addItems(names.country_list_2)                      # список стран по русски вставили в 1й выпадающий список
+        self.c1.addItems(list(names.country_list.keys()))                 # список стран по русски вставили в 1й выпадающий список
         self.c1.currentIndexChanged.connect(self.select_c1)         # при выборе из c1 запускается select_c1
         self.t.currentIndexChanged.connect(self.select_t)           # при выборе из t запускается select_t
 
-        self.c2.addItems(names.country_list_2)                      # список стран по русски вставили в 1й выпадающий список
+        self.c2.addItems(list(names.country_list.keys())) # список стран по русски вставили в 1й выпадающий список
         self.c2.currentIndexChanged.connect(self.select_c2)         # при выборе из c1 запускается select_c1
 
         self.btn1.clicked.connect(self.get_extract_9)
@@ -335,7 +336,7 @@ class Tab5(QWidget):
         self.ans.setPlainText(str(self.x2.extract_9s()))      # передать в текстовое поле
              
 
-
+# ?!
 class Tab6(QWidget):                                       # Новости + Аналитика (возможно)
     def __init__(self, fileInfo, parent=None):
         super(Tab6, self).__init__(parent)
@@ -348,7 +349,7 @@ class Tab6(QWidget):                                       # Новости + А
         self.l3 = QLabel('Все "девятки" чемпионата') 
         self.ans = QPlainTextEdit()                          # текстовое поле
         self.ans.setReadOnly(True)
-        self.c.addItems(names.country_list_2)                      # список стран по русски вставили в 1й выпадающий список
+        self.c.addItems(names.country_list.keys())  #names.country_list_2)                      # список стран по русски вставили в 1й выпадающий список
      #   self.c.currentIndexChanged.connect(self.select_c)          # при выборе из c запускается select_c
      #   self.t.currentIndexChanged.connect(self.select_t)          # при выборе из t запускается select_t
         layout = QVBoxLayout()   

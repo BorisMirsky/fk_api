@@ -1,18 +1,17 @@
 # coding: utf8
 
+# пользовательское кириллическое прочтение -> машинное на латинице
+country_list = {"":"",
+                "Англия":"england", "Германия":"germany",
+                "Испания":"spain", "Италия":"italy",
+                "Франция":"france", "Голландия":"holland",
+                "Португалия":"portugal", "Турция":"turkey",
+                "США":"mls", "Украина":"ukraine",
+                "Беларусь":"belarus", "Казахстан":"kz"}
 
-# "технический", он же "страны по английски"
-country_list_1 = ["", "england", "germany", "spain", "italy", "france",
-     "holland", "portugal", "turkey", "mls", "ukraine", "belarus", "kz"]
 
+#print(list(country_list.keys()))
 
-# "пользовательский" список, он же "страны по русски"
-country_list_2 = ["", "Англия", "Германия", "Испания", "Италия", "Франция",
-"Голландия", "Португалия", "Турция", "США", "Украина", "Беларусь", "Казахстан"]
-
-
-country_list = list(zip(country_list_1, country_list_2))
-# [('', ''), ('england', 'Англия'), ...
 
 
 
