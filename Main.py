@@ -246,9 +246,10 @@ class Tab4(QWidget):
         x1 = x.switch_names()[0]             # страна по английски
         x2 = x.switch_names()[1]             # клуб по английски
         self.ans.clear()
-        #print(x1, x2)
-        self.x3 = Do_pandas(x1, x2)          # передача страны и клуба
-        # x3 - Экземпляр класса-объект, имеет смысл только с методами
+        if x1 and x2:
+            self.x3 = Do_pandas(x1, x2)
+        else:
+            pass
 
     def get_matches(self):
         self.ans.setPlainText(str(self.x3.matches()))      # передать в текстовое поле

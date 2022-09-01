@@ -23,11 +23,10 @@ def random_user_agent():
 class Do_pandas:
     def __init__(self, country, team):
        url = 'https://football.kulichki.net/%s/%d/teams/%s.htm' % (country, current_year, team)
-       r = requests.get(url, headers = random_user_agent())                   
-       self.df = pd.read_html(r.text)[1]            
+       r = requests.get(url, headers = random_user_agent())
+       self.df = pd.read_html(r.text)[1]
        self.df.columns = ['№', "Игроки", 2, 3, "Матчи", "Голы", "Жёлтые", "Красные" ]
        self.df = self.df.set_index("Игроки") # назначаю "Игроков" индексом
-       #print(country, team)
           
     def matches(self):
         # для сортировки меняется тип столбца на цифровой
@@ -46,6 +45,4 @@ class Do_pandas:
         y = self.df.loc[:,["Жёлтые", "Красные"]].sort_values("Жёлтые", ascending=False)[:5]
         return y
 
-
-#x = Do_pandas('italy', 'roma') #('france', 'nantes')   # ('italy', 'roma')
-#print(x.yellow_red())  
+ 
