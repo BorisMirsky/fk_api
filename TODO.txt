@@ -56,28 +56,5 @@ current_year = dateTimeObj.year
 
 
 
+Вердер в Tab2 не показывает
 
-
-
-
-https://pypi.org/project/fake-useragent/
-https://tirinox.ru/fake-user-agent/
-
-
-
-Пытаюсь приспособить fake User-Agent
-Не встаёт, ошибка:
-      Maximum amount of retries reached
-Сделал как пишут тут:
-Папка:
-     C:\Users\Mirsky\source\repos\fk_api\fk_api_env\Lib\site-packages\fake_useragent
-Файл utils.py: 
-     class="w3-tabl....       ->    class="ws-tabl
-Файл settings.py:  
-     __version__ = '0.1.11'   -> __version__ = '0.1.12'
-
-Теперь новая ошибка:
-    fake_useragent.errors.FakeUserAgentError: No browsers version found for Chrome
-
-
-google colab - всё норм.
