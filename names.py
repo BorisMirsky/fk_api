@@ -1,6 +1,6 @@
 # coding: utf8
 
-# пользовательское кириллическое прочтение -> машинное на латинице
+
 country_list = {"":"",
                 "Англия":"england", "Германия":"germany",
                 "Испания":"spain", "Италия":"italy",
@@ -10,7 +10,6 @@ country_list = {"":"",
                 "Беларусь":"belarus", "Казахстан":"kz"}
 
 
-#print(list(country_list.keys()))
 
 
 

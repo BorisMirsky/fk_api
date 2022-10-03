@@ -1,63 +1,52 @@
 # coding: utf8
-
-from lxml.html import fromstring, parse
+from lxml.html import fromstring
 import requests
 from collections import OrderedDict
-import datetime
-import random
+from Parse_html import parse_html_country_year_team, random_user_agent
+
+# ------------------ класс для графика--------------------------------------
+# def make_plot - для функции в Main.py
+
+class Singleton(object):
+    def __new__(cls):
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(Singleton, cls).__new__(cls)
+        return cls.instance
+
+#s = Singleton()
+#print("Object created", s)
+#s1 = Singleton()
+#print("Object created", s1)
+
+# ----------------------------------------------------------------------------
 
 
-dateTimeObj = datetime.datetime.now() #datetime.now(tz=None)
-current_year = dateTimeObj.year
-
-user_agent_file = open("user-agents.txt", "r").readlines()
-
-def random_user_agent():
-    #user_agent_file = open("user-agents.txt", "r").readlines()
-    random_user_agent = random.choice(user_agent_file).strip()
-    header = {'user-agent': random_user_agent}
-    return header
-
-
-# сохраняет html-страницу для парсинга
-class Make_html_team:
-   def __init__(self, country, team):
-      url = 'https://football.kulichki.net/%s/%d/teams/%s.htm' % (country, current_year, team)
-      responce = requests.get(url, headers = random_user_agent())
-      with open('test_1.html', 'w') as output_file:
-         output_file.write(responce.text) 
-      self.html_text = open('test_1.html', 'r').read()
-
-
-
-# Citizenship_team(x1, x2)
 # подсчёт гражданства по игрокам в заданной команде
-class Citizenship_team:                       
-   def __init__(self, country, team):
-      root = Make_html_team(country, team)
-      tree = fromstring(root.html_text)  
-      post = tree.xpath('.//td[@width="15%"]')
-      keys = []                                           # список гражданств команды
-      for i in post:
-          z = i.text_content()
-          keys.append(z)
-      values = [keys.count(h) for h in keys]
-      self.my_dict = dict(zip(keys, values))
+class Citizenship_team:                   
+    def __init__(self, country, team):                                 # ?
+        responce = parse_html_country_year_team(country, team)                                         # ?
+        tree = fromstring(responce.text) #   .content)
+        post = tree.xpath('.//td[@width="15%"]')
+        
+        keys = []                                           # список гражданств команды
+        for item in post:
+            content = item.text_content()
+            keys.append(content)
+        values = [keys.count(player) for player in keys]
+        self.my_dict = dict(zip(keys, values))
 
-   def make_dict(self):
-      y1 = OrderedDict(sorted(self.my_dict.items(), key=lambda t: t[1], reverse = True))
-      y = list(y1.items())
-      res = '\n'.join([(q[0] + ' - ' + str(q[1])) for q in y])
-      return res
-   
-   def date_for_plot(self):
-      y = self.my_dict
-      z =  [i[0] for i in y.items()]         # список стран, X,             x.date_for_plot()[0]      
-      zz = [i[1] for i in y.items()]         # список гражданств, L,        x.date_for_plot()[1]
-      return z, zz
+    def make_dict(self):
+        res = OrderedDict(sorted(self.my_dict.items(), key=lambda t: t[1], reverse = True))
+        res1 = list(res.items())
+        res2 = '\n'.join([(q[0] + ' - ' + str(q[1])) for q in res1])
+        return res2
+
+    def date_for_plot(self):
+        x = self.my_dict
+        y =  [i[0] for i in x.items()]         # список стран, X,           
+        z = [i[1] for i in x.items()]          # список гражданств, L,      
+        return y, z
 
 
-#x = Citizenship_team('holland', 'az')
+#x = Citizenship_team('france', 'lyon')
 #print(x.make_dict())
-
-   
