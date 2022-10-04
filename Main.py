@@ -222,28 +222,35 @@ class Tab4(QWidget):
 class Tab5(QWidget):
     def __init__(self, fileInfo, parent=None):
         super(Tab5, self).__init__(parent)
-        self.l1 = QLabel('Всегда нравились игроки под №9')
-        self.l11 = QLabel('')
+        self.empty_line = QLabel('')
+        self.l1 = QLabel('Игрока под каким № ищем?')    
+        self.shoose_number = QComboBox()
+        self.shoosed_player_number = "" 
+        self.l11 = QLabel('')  
         self.l2 = QLabel('Выбор страны')
-        self.countries_ru_list_1 = QComboBox()                         # 1й выпадающий список "Страны"
+        self.countries_ru_list_1 = QComboBox()       # 1й выпадающий список "Страны"
         self.l3 = QLabel('Выбор команды')
-        self.teams_ru_list = QComboBox()                         # 2й выпадающий список "Команды"
-        self.btn1 = QPushButton("Get 9", self)       # кнопка выбора №1
-        self.l33 = QLabel('')                        # пустая строка
+        self.teams_ru_list = QComboBox()             # 2й выпадающий список "Команды"
+        self.btn1 = QPushButton("One", self)       # кнопка выбора №1                       # пустая строка
         self.l4 = QLabel('Выбор страны')
-        self.countries_ru_list_2 = QComboBox()                        # 3й выпадающий список "Страны"
-        self.btn2 = QPushButton("Get 9s", self)      # кнопка выбора №2
+        self.countries_ru_list_2 = QComboBox()       # 3й выпадающий список "Страны"
+        self.btn2 = QPushButton("All", self)      # кнопка выбора №2
                 
         self.l5 = QLabel('') 
-        self.text_field = QPlainTextEdit()                          # текстовое поле
+        self.text_field = QPlainTextEdit()           # текстовое поле
         self.text_field.setReadOnly(True)
-        
-        self.countries_ru_list_1.addItems(list(names.country_list.keys()))           # список стран по русски вставили в 1й выпадающий список
-        self.countries_ru_list_1.currentIndexChanged.connect(self.select_country_1)         # при выборе из c1 запускается select_c1
-        self.teams_ru_list.currentIndexChanged.connect(self.select_team)           # при выборе из t запускается select_t
 
-        self.countries_ru_list_2.addItems(list(names.country_list.keys())) # список стран по русски вставили в 1й выпадающий список
-        self.countries_ru_list_2.currentIndexChanged.connect(self.select_country_2)         # при выборе из c2 запускается select_c2
+        self.shoose_number.addItems([str(i) for i in range(1,100,1)])
+
+        #self.shoose_number.currentIndexChanged.connect(self.set_number)              # ?
+        self.shoose_number.activated[str].connect(self.set_number)
+        
+        self.countries_ru_list_1.addItems(list(names.country_list.keys()))           # список стран по русски --> в 1й выпадающий список
+        self.countries_ru_list_1.currentIndexChanged.connect(self.select_country_1)  # выбор из c1 --> select_c1
+        self.teams_ru_list.currentIndexChanged.connect(self.select_team)             # выбор из t --> select_t
+
+        self.countries_ru_list_2.addItems(list(names.country_list.keys()))           # список стран по русски ---> в 1й выпадающий список
+        self.countries_ru_list_2.currentIndexChanged.connect(self.select_country_2)  # выбор из c2 ---> select_c2
 
         self.btn1.clicked.connect(self.get_extract_9)
         self.btn2.clicked.connect(self.get_extract_9s)
@@ -251,20 +258,28 @@ class Tab5(QWidget):
         self.btn1.setFixedWidth(80)
         self.btn2.setFixedWidth(80)
         layout = QVBoxLayout()
+        layout.addWidget(self.empty_line)
         layout.addWidget(self.l1)
+        layout.addWidget(self.shoose_number)
         layout.addWidget(self.l11)
+        layout.addWidget(self.empty_line)
         layout.addWidget(self.l2)
         layout.addWidget(self.countries_ru_list_1)
         layout.addWidget(self.l3) 
         layout.addWidget(self.teams_ru_list)
         layout.addWidget(self.btn1)
-        layout.addWidget(self.l33)
+        layout.addWidget(self.empty_line)
         layout.addWidget(self.l4)
         layout.addWidget(self.countries_ru_list_2)
         layout.addWidget(self.btn2)
         layout.addWidget(self.l5)
         layout.addWidget(self.text_field)
         self.setLayout(layout)
+
+    def set_number(self, text):
+        self.l1.setText('')
+        self.l11.setText('Ищем игрока под № {}'.format(text))
+        self.shoosed_player_number = text
 
     # запускается при выборе из 1-го выпадающего списка "c1"
     def select_country_1(self):
@@ -277,11 +292,11 @@ class Tab5(QWidget):
     # запускается при выборе из 2-го выпадающего списка "t"
     def select_team(self):
         country_and_club_eng = switch_names(self.countries_ru_list_1.currentText(),
-                                       self.teams_ru_list.currentText()) # Страна и клуб по русски--> по английски
+                                       self.teams_ru_list.currentText())      # Страна и клуб по русски--> по английски
         country_eng, club_eng = country_and_club_eng[0], country_and_club_eng[1]
         self.text_field.clear()                            
         if country_eng and club_eng:                                          # Error processing
-            self.get9_instance = func_get9(country_eng, club_eng)             # передача страны и клуба
+            self.get9_instance = func_get9(country_eng, club_eng, self.shoosed_player_number)             # передача страны и клуба
         else:
             pass
     
@@ -292,7 +307,7 @@ class Tab5(QWidget):
     def select_country_2(self):
         self.text_field.clear()
         country_lat = names.country_list[self.countries_ru_list_2.currentText()]
-        self.get9s_instance = func_get9s(country_lat)           
+        self.get9s_instance = func_get9s(country_lat, self.shoosed_player_number)           
 
     def get_extract_9s(self):
         self.text_field.setPlainText(str(self.get9s_instance))      # передать в текстовое поле
