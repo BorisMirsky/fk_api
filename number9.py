@@ -3,15 +3,17 @@
 import requests
 from lxml import html
 import pandas as pd
-from Parse_html import parse_html_country_year_team, parse_html_country, random_user_agent
+from Parse_html import parse_html_country_season_team, parse_html_country_season, random_user_agent
 import os
 
 
 
 def func_get9(country, team, number):
-    response = parse_html_country_year_team(country, team)   
+    response = parse_html_country_season_team(country, team)   
     tree = html.fromstring(response.content)
-    clubname = tree.xpath('.//font[@size="6"]/text()')#[0] 
+    clubname = tree.xpath('.//font[@size="6"]/text()')[0]
+    print(str(clubname))
+    # etree.tostring(child, method="html", encoding="unicode")
     df = pd.read_html(response.text)[1] 
     df.columns = ['№', 'Игрок', 'Дата рождения', 'Гражданство', 4, 5, 6, 7]
     if number in df['№'].tolist():
@@ -23,13 +25,14 @@ def func_get9(country, team, number):
     else:
         res = 'В команде {0} нет игрока под № {1}'.format(clubname, number)
         return res
+    
 
-#x = func_get9('italy', 'torino', '91')
+#x = func_get9('italy', 'torino', '57')
 #print(x)
 
 
 def func_get9s(country, number):
-    responce = parse_html_country(country)
+    responce = parse_html_country_season(country)
     tree = html.fromstring(responce.content)                                  
     links = tree.xpath('.//li[@class="yellow-green-bg"][2]/ul/li/a/@href')  
     sum_list = []                                                           

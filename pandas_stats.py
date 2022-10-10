@@ -4,13 +4,14 @@ import requests
 from datetime import datetime
 import html5lib
 import random
-from Parse_html import parse_html_country_year_team #, parse_html_country, random_user_agent
+from Parse_html import parse_html_country_season_team
+
 
 
 # принимает страну и клуб на латинице, строит урл, строит таблицу из страницы
 class Stats_of_club:
     def __init__(self, country, team):
-        response = parse_html_country_year_team(country, team)
+        response = parse_html_country_year_team(country, season, team)
         self.df = pd.read_html(response.text)[1] 
         self.df.columns = ['№', "Игроки", 2, 3, "Матчи", "Голы", "Жёлтые", "Красные" ]
         self.df = self.df.set_index("Игроки") 

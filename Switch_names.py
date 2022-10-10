@@ -2,13 +2,14 @@
 from lxml.html import fromstring #, parse
 #import requests
 import names
-from Parse_html import parse_html_country
+from Parse_html import parse_html_country_season, season_to_year
 
 
 # преобразует клуб с русского на английский
-def switch_names(country_ru, team_ru):
+def switch_names(country_ru, team_ru, season):
       country_lat = names.country_list[country_ru]
-      response = parse_html_country(country_lat)
+      year = season_to_year(country_lat, season)
+      response = parse_html_country_season(country_lat, year)
       tree = fromstring(response.text)
       # генерит на лету список клубов по английски (вынимает все url'ы)
       post1 = tree.xpath('.//li[@class="yellow-green-bg"][2]/ul/li/a/@href')
@@ -24,5 +25,5 @@ def switch_names(country_ru, team_ru):
       team1 = teams11[j]                    # клуб в английском списке по индексу
       return [country_lat, team1]             # вернёт имена на английском
 
-#print(switch_names('Англия','Ливерпуль'))
+#print(switch_names('Англия','Арсенал',2016))
 

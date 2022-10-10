@@ -2,16 +2,17 @@
 from lxml.html import fromstring
 import requests
 from collections import OrderedDict
-from Parse_html import parse_html_country_year_team, random_user_agent
+from Parse_html import parse_html_country_season, parse_html_country_season_team, season_to_year, one_season_countrys
+
 
 # ------------------ класс для графика--------------------------------------
 # def make_plot - для функции в Main.py
 
-class Singleton(object):
-    def __new__(cls):
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(Singleton, cls).__new__(cls)
-        return cls.instance
+#class Singleton(object):
+#    def __new__(cls):
+#        if not hasattr(cls, 'instance'):
+#            cls.instance = super(Singleton, cls).__new__(cls)
+#        return cls.instance
 
 #s = Singleton()
 #print("Object created", s)
@@ -23,11 +24,10 @@ class Singleton(object):
 
 # подсчёт гражданства по игрокам в заданной команде
 class Citizenship_team:                   
-    def __init__(self, country, team):                                 # ?
-        responce = parse_html_country_year_team(country, team)                                         # ?
-        tree = fromstring(responce.text) #   .content)
-        post = tree.xpath('.//td[@width="15%"]')
-        
+    def __init__(self, country, season, team):                       
+        responce = parse_html_country_season_team(country, season, team)                                         # ?
+        tree = fromstring(responce.text) 
+        post = tree.xpath('.//td[@width="15%"]')        
         keys = []                                           # список гражданств команды
         for item in post:
             content = item.text_content()
@@ -48,5 +48,5 @@ class Citizenship_team:
         return y, z
 
 
-#x = Citizenship_team('france', 'lyon')
+#x = Citizenship_team('england', 'Архив 2007/2006', 'arsenal')
 #print(x.make_dict())
